@@ -1,49 +1,73 @@
-% Net
-net = squeezenet;
+warnStruct = warning('off', 'backtrace');
 
+% Create net
+net = squeezenet;
 sz = net.Layers(1).InputSize;
+
+% Create figure
 f = figure;
+barInit = true;
+
+% Score buffer
 scoresIdx = 1;
 ScoresIdxMax = 100;
 scores = zeros([1,ScoresIdxMax]);
-bug = true;
 
 % Video
-cam_url = 'http://172.16.28.74:8080/video';
-
 clear cam
-% cam = webcam;%('USB2.0 Camera');
-cam = ipcam(cam_url);
 
 while isvalid(f)
-    img = snapshot(cam);
+    if ~exist('cam', 'var')
+        try
+            cam = webcam;
+        catch ME
+            warning(ME.message);
+            continue
+        end
+    end
     
-    % [Y, score] = classify(net, imresize(img, sz(1:2)), 'ExecutionEnvironment', 'gpu');
+    try
+        img = snapshot(cam);
+    catch ME
+        if strcmp(ME.identifier, 'matlab:ipcamera:ipcam:timeout')
+            clear cam
+            continue
+        end
+    end
+    
+    %     [Y, score] = classify(net, imresize(img, sz(1:2)), 'ExecutionEnvironment', 'gpu'); % Use GPU
     [Y, score] = classify(net, imresize(img, sz(1:2)));
     score = max(score)*100;
     scores(scoresIdx) = mean([scores(mod(scoresIdx - (1:2) - 1,ScoresIdxMax)+1), score]);
     
-    disp(['I think it''s a ' char(Y) ' (' num2str(round(score)) '% sure)']);
+    formattedScore = ['I think it''s a ' char(Y) ' (' num2str(round(score)) '% sure)'];
+
+    disp(formattedScore);
+
     if isvalid(f)
         try
-            
             subplot(4,5,[2:4, 7:9, 12:14, 17:19]);
+
             imshow(img);
-            title(['I think it''s a ' char(Y) ' (' num2str(round(score)) '% sure)']);
+
+            title(formattedScore);
             
             subplot(8, 20, 20*(1:6)+3);
-            if bug
-                b = bar(0);
-                bug = false;
+
+            if barInit
+                scoreBar = bar(0);
+                barInit = false;
             else
-                b = bar(scores(scoresIdx));
+                scoreBar = bar(scores(scoresIdx));
             end
-            % b.FaceColor = [0.8500 0.3250 0.0980];
+            
+            % Add color to the score bar propotional to the score
             j = jet(64);
             colormap(flip(j(32:58, :)));
             c = colormap;
-            b.FaceColor = c(round(size(c,1)*scores(scoresIdx)/100), :);
-            % colorbar
+            scoreBar.FaceColor = c(round(size(c,1)*scores(scoresIdx)/100), :);
+
+            % Format plot
             ylim([0 100]);
             xticks([]);
             xticklabels({});
@@ -62,5 +86,10 @@ while isvalid(f)
         catch ME
         end
     end
+
+    % Shift score buffer index (loop if necessary)
     scoresIdx = mod(scoresIdx, ScoresIdxMax) + 1;
 end
+
+warning(warnStruct);
+clear cam
