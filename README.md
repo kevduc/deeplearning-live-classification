@@ -5,4 +5,4 @@ Using [SqueezeNet](https://www.mathworks.com/help/deeplearning/ref/squeezenet.ht
 
 ## Support packages used
 - [MATLAB Support Package for USB Webcams](https://www.mathworks.com/matlabcentral/fileexchange/45182-matlab-support-package-for-usb-webcams)
-- [IP Camera Support from MATLAB](https://www.mathworks.com/matlabcentral/fileexchange/49824-matlab-support-package-for-ip-cameras)
+- [MATLAB Support Package for IP Cameras](https://www.mathworks.com/matlabcentral/fileexchange/49824-matlab-support-package-for-ip-cameras)
