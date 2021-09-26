@@ -9,5 +9,5 @@ Using [SqueezeNet](https://www.mathworks.com/help/deeplearning/ref/squeezenet.ht
 - [MATLAB Support Package for USB Webcams](https://www.mathworks.com/matlabcentral/fileexchange/45182-matlab-support-package-for-usb-webcams)
 - [MATLAB Support Package for IP Cameras](https://www.mathworks.com/matlabcentral/fileexchange/49824-matlab-support-package-for-ip-cameras)
 
-## Android App (for IP Camera)
-- [IP Webcam](https://play.google.com/store/apps/details?id=com.pas.webcam)
+## IP Camera App
+- Android: [IP Webcam](https://play.google.com/store/apps/details?id=com.pas.webcam)
